@@ -895,8 +895,26 @@ fun AllocationSummaryCard(assetsTotal: Double, debtsTotal: Double) {
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(if (isDarkMode) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.25f))
-            .border(1.dp, if (isDarkMode) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.4f), RoundedCornerShape(24.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = if (isDarkMode) 
+                        listOf(Color.White.copy(alpha = 0.08f), Color.White.copy(alpha = 0.02f))
+                    else 
+                        listOf(Color.White.copy(alpha = 0.4f), Color.White.copy(alpha = 0.1f)),
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                )
+            )
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = if (isDarkMode)
+                        listOf(Color.White.copy(alpha = 0.15f), Color.Transparent)
+                    else
+                        listOf(Color.White.copy(alpha = 0.6f), Color.White.copy(alpha = 0.1f))
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
             .padding(16.dp)
     ) {
         Row(
@@ -979,8 +997,26 @@ fun CategoryDistributionCard(
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(if (isDarkMode) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.25f))
-            .border(1.dp, if (isDarkMode) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.4f), RoundedCornerShape(24.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = if (isDarkMode) 
+                        listOf(Color.White.copy(alpha = 0.08f), Color.White.copy(alpha = 0.02f))
+                    else 
+                        listOf(Color.White.copy(alpha = 0.45f), Color.White.copy(alpha = 0.15f)),
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                )
+            )
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = if (isDarkMode)
+                        listOf(Color.White.copy(alpha = 0.15f), Color.Transparent)
+                    else
+                        listOf(Color.White.copy(alpha = 0.7f), Color.White.copy(alpha = 0.15f))
+                ),
+                shape = RoundedCornerShape(24.dp)
+            )
             .padding(16.dp)
     ) {
         Column {
@@ -1035,25 +1071,38 @@ fun CategoryDistributionCard(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) getColorForType(category).copy(alpha = 0.1f) else Color.Transparent)
-                                .clickable { onCategorySelect(category) }
-                                .padding(4.dp)
+                                 .fillMaxWidth()
+                                 .clip(RoundedCornerShape(12.dp))
+                                 .background(if (isSelected) getColorForType(category).copy(alpha = 0.1f) else Color.Transparent)
+                                 .clickable { onCategorySelect(category) }
+                                 .padding(horizontal = 8.dp, vertical = 6.dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                                Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(getColorForType(category)))
-                                Spacer(Modifier.width(8.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .clip(RoundedCornerShape(6.dp))
+                                        .background(getColorForType(category).copy(alpha = 0.2f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = getIconForType(category),
+                                        contentDescription = null,
+                                        tint = getColorForType(category),
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                }
+                                Spacer(Modifier.width(10.dp))
                                 Text(
                                     category,
-                                    fontSize = 12.sp,
+                                    fontSize = 13.sp,
                                     color = if (isSelected) getColorForType(category) else (if (isDarkMode) Color.White else Color(0xFF191C1E)),
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                                     maxLines = 1,
                                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                 )
                             }
-                            Text("%.1f%%".format(pct), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF475569))
+                            Text("%.1f%%".format(pct), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF475569))
                         }
                     }
                     if (categoryDistribution.size > 5) {
@@ -1088,13 +1137,33 @@ fun TabButton(text: String, isSelected: Boolean, onClick: () -> Unit, modifier: 
 @Composable
 fun ItemCard(item: FinancialItem, currencySymbol: String, onClick: () -> Unit, onDelete: () -> Unit, isSingleColumn: Boolean = false, modifier: Modifier = Modifier) {
     val isDarkMode = LocalIsDarkMode.current
+    val typeColor = getColorForType(item.type)
+    
     Box(
         modifier = modifier
             .fillMaxWidth()
             .then(if (isSingleColumn) Modifier.heightIn(min = 120.dp) else Modifier.aspectRatio(1.2f))
-            .clip(RoundedCornerShape(24.dp))
-            .background(if (isDarkMode) Color.White.copy(alpha = 0.08f) else Color.White.copy(alpha = 0.25f))
-            .border(1.dp, if (isDarkMode) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.4f), RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(28.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = if (isDarkMode) 
+                        listOf(Color.White.copy(alpha = 0.1f), Color.White.copy(alpha = 0.02f))
+                    else 
+                        listOf(Color.White.copy(alpha = 0.55f), Color.White.copy(alpha = 0.15f)),
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                )
+            )
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = if (isDarkMode)
+                        listOf(Color.White.copy(alpha = 0.15f), Color.Transparent)
+                    else
+                        listOf(Color.White.copy(alpha = 0.7f), Color.White.copy(alpha = 0.15f))
+                ),
+                shape = RoundedCornerShape(28.dp)
+            )
             .clickable { onClick() }
             .padding(16.dp)
     ) {
@@ -1105,63 +1174,95 @@ fun ItemCard(item: FinancialItem, currencySymbol: String, onClick: () -> Unit, o
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 Box(
                     modifier = Modifier
-                        .size(42.dp)
-                        .clip(CircleShape)
-                        .background(getColorForType(item.type).copy(alpha = 0.12f)),
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(typeColor.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = getIconForType(item.type), 
                         contentDescription = null,
-                        tint = getColorForType(item.type),
-                        modifier = Modifier.size(22.dp)
+                        tint = typeColor,
+                        modifier = Modifier.size(26.dp)
                     )
                 }
                 
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Box(
                         modifier = Modifier
-                            .background(getColorForType(item.type).copy(alpha = 0.15f), RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                            .background(typeColor.copy(alpha = 0.15f), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
                             "${item.interestRate}%",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = getColorForType(item.type)
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Black,
+                            color = typeColor
                         )
                     }
                     
                     IconButton(
                         onClick = onDelete,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(32.dp)
                     ) {
                         Icon(
-                            Icons.Default.Delete,
+                            Icons.Default.DeleteOutline,
                             contentDescription = "Delete",
-                            tint = Color(0xFF94A3B8),
-                            modifier = Modifier.size(16.dp)
+                            tint = if (isDarkMode) Color.White.copy(alpha = 0.3f) else Color(0xFF94A3B8),
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
             }
             
-            Column {
-                Text(item.name, fontSize = 12.sp, color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF64748B), fontWeight = FontWeight.Medium, maxLines = 1)
-                Text(formatCurrency(item.balance, currencySymbol), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = if (isDarkMode) Color.White else Color(0xFF191C1E))
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    item.name, 
+                    fontSize = 13.sp, 
+                    color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF64748B), 
+                    fontWeight = FontWeight.SemiBold, 
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
+                Text(
+                    formatCurrency(item.balance, currencySymbol), 
+                    fontSize = 20.sp, 
+                    fontWeight = FontWeight.ExtraBold, 
+                    color = if (isDarkMode) Color.White else Color(0xFF0F172A)
+                )
+                
                 if (item.shares != null && item.purchasePrice != null && item.currentPrice != null) {
                     val totalCost = item.shares * item.purchasePrice
                     val totalValue = item.shares * item.currentPrice
                     val unrealizedGain = totalValue - totalCost
-                    val gainColor = if (unrealizedGain >= 0) Color(0xFF15803D) else Color(0xFFB91C1C)
+                    val gainColor = if (unrealizedGain >= 0) Color(0xFF10B981) else Color(0xFFEF4444)
                     val sign = if (unrealizedGain >= 0) "+" else ""
-                    Text("${sign}${formatCurrency(unrealizedGain, currencySymbol)}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = if (isDarkMode) gainColor.copy(alpha = 0.9f) else gainColor)
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Icon(
+                            if (unrealizedGain >= 0) Icons.Default.TrendingUp else Icons.Default.TrendingDown,
+                            contentDescription = null,
+                            tint = gainColor,
+                            modifier = Modifier.size(12.dp)
+                        )
+                        Text(
+                            "${sign}${formatCurrency(unrealizedGain, currencySymbol)}", 
+                            fontSize = 12.sp, 
+                            fontWeight = FontWeight.Bold, 
+                            color = gainColor
+                        )
+                    }
                 } else if (item.isDebt && item.minimumPayment > 0.0) {
-                    Text("Min Pay: ${formatCurrency(item.minimumPayment, currencySymbol)}", fontSize = 12.sp, color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF64748B))
+                    Text(
+                        "Min: ${formatCurrency(item.minimumPayment, currencySymbol)}", 
+                        fontSize = 12.sp, 
+                        color = if (isDarkMode) Color(0xFF60A5FA).copy(alpha = 0.8f) else Color(0xFF1D4ED8),
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
         }
@@ -1237,11 +1338,30 @@ fun ItemEditDialog(
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(if (isDarkMode) Color(0xFF1E293B) else Color.White)
                 ) {
                     options.forEach { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { 
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(getColorForType(selectionOption).copy(alpha = 0.15f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = getIconForType(selectionOption),
+                                            contentDescription = null,
+                                            tint = getColorForType(selectionOption),
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                    Text(selectionOption)
+                                }
+                            },
                             onClick = {
                                 type = selectionOption
                                 expanded = false
@@ -1355,36 +1475,44 @@ fun ItemEditDialog(
 
 fun getIconForType(type: String): ImageVector {
     return when(type.lowercase()) {
-        "savings", "cash" -> Icons.Default.AccountBalanceWallet
-        "mutual funds" -> Icons.AutoMirrored.Filled.TrendingUp
-        "fixed deposit" -> Icons.Default.Lock
-        "ppf" -> Icons.Default.Shield
-        "bonds" -> Icons.Default.Security
+        "cash" -> Icons.Default.Payments
+        "savings" -> Icons.Default.AccountBalance
+        "mutual funds" -> Icons.Default.PieChart
+        "real estate" -> Icons.Default.Apartment
+        "fixed deposit" -> Icons.Default.LockClock
         "recurring deposit" -> Icons.Default.Update
-        "mortgage", "real estate" -> Icons.Default.Home
+        "ppf" -> Icons.Default.VerifiedUser
+        "bonds" -> Icons.Default.Description
+        "stock" -> Icons.Default.ShowChart
+        "etf" -> Icons.Default.Timeline
+        "other asset" -> Icons.Default.BubbleChart
+        "mortgage" -> Icons.Default.HomeWork
         "car loan" -> Icons.Default.DirectionsCar
         "student loan" -> Icons.Default.School
         "credit card" -> Icons.Default.CreditCard
-        "stock", "etf" -> Icons.AutoMirrored.Filled.ShowChart
-        else -> Icons.Default.AttachMoney
+        "other debt" -> Icons.Default.ReceiptLong
+        else -> Icons.Default.Category
     }
 }
 
 fun getColorForType(type: String): Color {
     return when(type.lowercase()) {
-        "savings", "cash" -> Color(0xFF3B82F6) // Blue 500
+        "cash" -> Color(0xFF10B981) // Emerald 500
+        "savings" -> Color(0xFF3B82F6) // Blue 500
         "mutual funds" -> Color(0xFF8B5CF6) // Violet 500
-        "fixed deposit" -> Color(0xFFF59E0B) // Amber 500
-        "ppf" -> Color(0xFF10B981) // Emerald 500
-        "bonds" -> Color(0xFF064E3B) // Emerald 900
+        "real estate" -> Color(0xFFF59E0B) // Amber 500
+        "fixed deposit" -> Color(0xFF6366F1) // Indigo 500
         "recurring deposit" -> Color(0xFF06B6D4) // Cyan 500
-        "mortgage", "real estate" -> Color(0xFFEF4444) // Red 500
-        "car loan" -> Color(0xFFF97316) // Orange 500
-        "student loan" -> Color(0xFF6366F1) // Indigo 500
-        "credit card" -> Color(0xFFBE123C) // Rose 700
-        "stock" -> Color(0xFF14B8A6) // Teal 500
-        "etf" -> Color(0xFF84CC16) // Lime 500
+        "ppf" -> Color(0xFF0D9488) // Teal 600
+        "bonds" -> Color(0xFF4F46E5) // Indigo 600
+        "stock" -> Color(0xFFEC4899) // Pink 500
+        "etf" -> Color(0xFFF43F5E) // Rose 500
         "other asset" -> Color(0xFF64748B) // Slate 500
+        "mortgage" -> Color(0xFFEF4444) // Red 500
+        "car loan" -> Color(0xFFF97316) // Orange 500
+        "student loan" -> Color(0xFF8B5CF6) // Violet 500
+        "credit card" -> Color(0xFFE11D48) // Rose 600
+        "other debt" -> Color(0xFF475569) // Slate 600
         else -> Color(0xFF94A3B8) // Slate 400
     }
 }
@@ -1504,14 +1632,23 @@ fun NetWorthSummaryCard(
             .background(
                 Brush.linearGradient(
                     colors = if (isDarkMode) 
-                        listOf(Color.White.copy(alpha = 0.12f), Color.White.copy(alpha = 0.05f))
+                        listOf(Color.White.copy(alpha = 0.12f), Color.White.copy(alpha = 0.03f))
                     else 
-                        listOf(Color.White.copy(alpha = 0.4f), Color.White.copy(alpha = 0.15f)),
+                        listOf(Color.White.copy(alpha = 0.5f), Color.White.copy(alpha = 0.15f)),
                     start = Offset(0f, 0f),
-                    end = Offset(1000f, 1000f)
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                 )
             )
-            .border(1.dp, if (isDarkMode) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.5f), RoundedCornerShape(32.dp))
+            .border(
+                width = 1.2.dp,
+                brush = Brush.linearGradient(
+                    colors = if (isDarkMode)
+                        listOf(Color.White.copy(alpha = 0.2f), Color.Transparent)
+                    else
+                        listOf(Color.White.copy(alpha = 0.8f), Color.White.copy(alpha = 0.1f))
+                ),
+                shape = RoundedCornerShape(32.dp)
+            )
             .padding(24.dp)
     ) {
         Column {
@@ -1581,19 +1718,19 @@ fun NetWorthSummaryCard(
                 SummaryStat(
                     label = "TOTAL ASSETS",
                     value = formatCurrency(assetsTotal, currencySymbol),
-                    color = Color(0xFF1D4ED8)
+                    color = Color(0xFF10B981) // Emerald 500
                 )
                 Box(
                     modifier = Modifier
                         .width(1.dp)
                         .height(36.dp)
-                        .background(Color(0xFFCBD5E1).copy(alpha = 0.5f))
+                        .background(if (isDarkMode) Color.White.copy(alpha = 0.1f) else Color(0xFFCBD5E1).copy(alpha = 0.5f))
                         .align(Alignment.CenterVertically)
                 )
                 SummaryStat(
                     label = "LIABILITIES",
                     value = formatCurrency(debtsTotal, currencySymbol),
-                    color = Color(0xFFB91C1C)
+                    color = Color(0xFFEF4444) // Red 500
                 )
             }
         }
