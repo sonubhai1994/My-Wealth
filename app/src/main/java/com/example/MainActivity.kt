@@ -583,141 +583,155 @@ fun WealthAppScreen(viewModel: WealthViewModel) {
                 }
             }
         ) { innerPadding ->
-            Column(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columns),
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
                 // Header
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Image(
-                            painter = painterResource(id = R.drawable.circular_wealth_logo_1780144080896),
-                            contentDescription = "App Logo",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                        )
-                        Column {
-                            Text("PORTFOLIO ANALYSIS", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF64748B), letterSpacing = 1.sp)
-                            Text("My Wealth", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = if (isDarkMode) Color.White else Color(0xFF191C1E))
-                        }
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Box(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.25f))
-                                .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                                .clickable { viewModel.toggleTheme() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode, 
-                                contentDescription = "Toggle Theme", 
-                                tint = if (isDarkMode) Color(0xFFFACC15) else Color(0xFF191C1E)
+                item(span = { GridItemSpan(columns) }) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Image(
+                                painter = painterResource(id = R.drawable.circular_wealth_logo_1780144080896),
+                                contentDescription = "App Logo",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
                             )
+                            Column {
+                                Text("PORTFOLIO ANALYSIS", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF64748B), letterSpacing = 1.sp)
+                                Text("My Wealth", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, color = if (isDarkMode) Color.White else Color(0xFF191C1E))
+                            }
                         }
-                        Box(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.25f))
-                                .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
-                                .clickable { viewModel.setAuthenticated(false) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Default.Lock, contentDescription = "Lock App", tint = if (isDarkMode) Color.White else Color(0xFF001D35))
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.White.copy(alpha = 0.25f))
+                                    .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
+                                    .clickable { viewModel.toggleTheme() },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode, 
+                                    contentDescription = "Toggle Theme", 
+                                    tint = if (isDarkMode) Color(0xFFFACC15) else Color(0xFF191C1E)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.White.copy(alpha = 0.25f))
+                                    .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
+                                    .clickable { viewModel.setAuthenticated(false) },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Lock, contentDescription = "Lock App", tint = if (isDarkMode) Color.White else Color(0xFF001D35))
+                            }
                         }
                     }
                 }
                 
                 // Net Worth Summary Card
-                NetWorthSummaryCard(
-                    netWorth = netWorth,
-                    assetsTotal = assetsTotal,
-                    debtsTotal = debtsTotal,
-                    currencySymbol = currencySymbol,
-                    pctGainStr = pctGainStr,
-                    pctGainColor = pctGainColor,
-                    pctGainBgColor = pctGainBgColor,
-                    showBadge = showBadge
-                )
-                
-                // Allocation Chart
-                AllocationSummaryCard(assetsTotal, debtsTotal)
-                
-                // Category Distribution Chart (New)
-                val assetItems = items.filter { !it.isDebt }
-                if (assetItems.isNotEmpty()) {
-                    CategoryDistributionCard(
-                        assetItems = assetItems, 
+                item(span = { GridItemSpan(columns) }) {
+                    NetWorthSummaryCard(
+                        netWorth = netWorth,
+                        assetsTotal = assetsTotal,
+                        debtsTotal = debtsTotal,
                         currencySymbol = currencySymbol,
-                        selectedCategory = selectedCategory,
-                        onCategorySelect = { viewModel.setSelectedCategory(it) }
+                        pctGainStr = pctGainStr,
+                        pctGainColor = pctGainColor,
+                        pctGainBgColor = pctGainBgColor,
+                        showBadge = showBadge
                     )
                 }
                 
+                // Allocation Chart
+                item(span = { GridItemSpan(columns) }) {
+                    AllocationSummaryCard(assetsTotal, debtsTotal)
+                }
+                
+                // Category Distribution Chart
+                val assetItems = items.filter { !it.isDebt }
+                if (assetItems.isNotEmpty()) {
+                    item(span = { GridItemSpan(columns) }) {
+                        CategoryDistributionCard(
+                            assetItems = assetItems, 
+                            currencySymbol = currencySymbol,
+                            selectedCategory = selectedCategory,
+                            onCategorySelect = { viewModel.setSelectedCategory(it) }
+                        )
+                    }
+                }
+                
                 // Advanced Controls
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { viewModel.setSearchQuery(it) },
-                        placeholder = { Text("Search assets...", fontSize = 14.sp) },
+                item(span = { GridItemSpan(columns) }) {
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .heightIn(min = 48.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White.copy(alpha = 0.25f)),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF64748B)) },
-                        singleLine = true,
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    
-                    var showSortMenu by remember { mutableStateOf(false) }
-                    Box {
-                        IconButton(
-                            onClick = { showSortMenu = true },
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { viewModel.setSearchQuery(it) },
+                            placeholder = { Text("Search assets...", fontSize = 14.sp) },
                             modifier = Modifier
-                                .size(48.dp)
+                                .weight(1f)
+                                .heightIn(min = 48.dp)
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(Color.White.copy(alpha = 0.25f))
-                        ) {
-                            Icon(Icons.Default.Sort, contentDescription = "Sort", tint = Color(0xFF475569))
-                        }
-                        DropdownMenu(
-                            expanded = showSortMenu,
-                            onDismissRequest = { showSortMenu = false },
-                            modifier = Modifier.background(Color.White).clip(RoundedCornerShape(12.dp))
-                        ) {
-                            listOf("Value (High)", "Value (Low)", "Name (A-Z)", "Rate (High)").forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(option) },
-                                    onClick = { 
-                                        viewModel.setSortBy(option)
-                                        showSortMenu = false
-                                    }
-                                )
+                                .background(Color.White.copy(alpha = 0.25f)),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF64748B)) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        
+                        var showSortMenu by remember { mutableStateOf(false) }
+                        Box {
+                            IconButton(
+                                onClick = { showSortMenu = true },
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color.White.copy(alpha = 0.25f))
+                            ) {
+                                Icon(Icons.Default.Sort, contentDescription = "Sort", tint = Color(0xFF475569))
+                            }
+                            DropdownMenu(
+                                expanded = showSortMenu,
+                                onDismissRequest = { showSortMenu = false },
+                                modifier = Modifier.background(Color.White).clip(RoundedCornerShape(12.dp))
+                            ) {
+                                listOf("Value (High)", "Value (Low)", "Name (A-Z)", "Rate (High)").forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option) },
+                                        onClick = { 
+                                            viewModel.setSortBy(option)
+                                            showSortMenu = false
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -725,106 +739,99 @@ fun WealthAppScreen(viewModel: WealthViewModel) {
                 
                 // Active Filters
                 if (selectedCategory != null) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            color = getColorForType(selectedCategory!!).copy(alpha = 0.15f),
-                            shape = RoundedCornerShape(12.dp),
-                            onClick = { viewModel.setSelectedCategory(null) }
+                    item(span = { GridItemSpan(columns) }) {
+                        Row(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            Surface(
+                                color = getColorForType(selectedCategory!!).copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(12.dp),
+                                onClick = { viewModel.setSelectedCategory(null) }
                             ) {
-                                Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(getColorForType(selectedCategory!!)))
-                                Text(selectedCategory!!, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = getColorForType(selectedCategory!!))
-                                Icon(Icons.Default.Close, contentDescription = "Clear", modifier = Modifier.size(14.dp), tint = getColorForType(selectedCategory!!))
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(getColorForType(selectedCategory!!)))
+                                    Text(selectedCategory!!, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = getColorForType(selectedCategory!!))
+                                    Icon(Icons.Default.Close, contentDescription = "Clear", modifier = Modifier.size(14.dp), tint = getColorForType(selectedCategory!!))
+                                }
                             }
                         }
                     }
                 }
                 
-                // Grid
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(columns),
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.weight(1f).fillMaxWidth()
-                ) {
+                item(span = { GridItemSpan(columns) }) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(if (isDarkMode) Color.White.copy(alpha = 0.05f) else Color.White.copy(alpha = 0.25f))
+                            .padding(4.dp)
+                    ) {
+                        TabButton(
+                            text = "Assets",
+                            isSelected = !currentTabIsDebt,
+                            onClick = { currentTabIsDebt = false },
+                            modifier = Modifier.weight(1f)
+                        )
+                        TabButton(
+                            text = "Debts",
+                            isSelected = currentTabIsDebt,
+                            onClick = { currentTabIsDebt = true },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+                
+                val displayItems = items.filter { it.isDebt == currentTabIsDebt }
+                
+                if (displayItems.isEmpty()) {
                     item(span = { GridItemSpan(columns) }) {
-                        Row(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(if (isDarkMode) Color.White.copy(alpha = 0.05f) else Color.White.copy(alpha = 0.25f))
-                                .padding(4.dp)
+                                .padding(vertical = 48.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
-                            TabButton(
-                                text = "Assets",
-                                isSelected = !currentTabIsDebt,
-                                onClick = { currentTabIsDebt = false },
-                                modifier = Modifier.weight(1f)
+                            Icon(
+                                imageVector = if (searchQuery.isNotEmpty()) Icons.Default.SearchOff else Icons.Default.AddChart,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = if (isDarkMode) Color(0xFF475569) else Color(0xFFCBD5E1)
                             )
-                            TabButton(
-                                text = "Debts",
-                                isSelected = currentTabIsDebt,
-                                onClick = { currentTabIsDebt = true },
-                                modifier = Modifier.weight(1f)
+                            Spacer(Modifier.height(16.dp))
+                            Text(
+                                text = if (searchQuery.isNotEmpty()) "No results matching \"$searchQuery\"" else "Start tracking your ${if (currentTabIsDebt) "liabilities" else "assets"}",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF94A3B8),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 32.dp)
                             )
-                        }
-                    }
-                    
-                    val displayItems = items.filter { it.isDebt == currentTabIsDebt }
-                    
-                    if (displayItems.isEmpty()) {
-                        item(span = { GridItemSpan(columns) }) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 48.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    imageVector = if (searchQuery.isNotEmpty()) Icons.Default.SearchOff else Icons.Default.AddChart,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(64.dp),
-                                    tint = if (isDarkMode) Color(0xFF475569) else Color(0xFFCBD5E1)
-                                )
-                                Spacer(Modifier.height(16.dp))
-                                Text(
-                                    text = if (searchQuery.isNotEmpty()) "No results matching \"$searchQuery\"" else "Start tracking your ${if (currentTabIsDebt) "liabilities" else "assets"}",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = if (isDarkMode) Color(0xFF94A3B8) else Color(0xFF94A3B8),
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 32.dp)
-                                )
-                                if (searchQuery.isEmpty()) {
-                                    TextButton(onClick = { showDialog = true; editingItem = null }) {
-                                        Text("Add First Item", fontWeight = FontWeight.Bold, color = if (isDarkMode) Color(0xFF60A5FA) else Color(0xFF0061A4))
-                                    }
+                            if (searchQuery.isEmpty()) {
+                                TextButton(onClick = { showDialog = true; editingItem = null }) {
+                                    Text("Add First Item", fontWeight = FontWeight.Bold, color = if (isDarkMode) Color(0xFF60A5FA) else Color(0xFF0061A4))
                                 }
                             }
                         }
-                    } else {
-                        items(displayItems, key = { it.id }) { item ->
-                            ItemCard(
-                                item = item, 
-                                currencySymbol = currencySymbol, 
-                                onClick = {
-                                    editingItem = item
-                                    showDialog = true
-                                },
-                                onDelete = { itemToDelete = item },
-                                isSingleColumn = columns == 1,
-                                modifier = Modifier.animateItem()
-                            )
-                        }
+                    }
+                } else {
+                    items(displayItems, key = { it.id }) { item ->
+                        ItemCard(
+                            item = item, 
+                            currencySymbol = currencySymbol, 
+                            onClick = {
+                                editingItem = item
+                                showDialog = true
+                            },
+                            onDelete = { itemToDelete = item },
+                            isSingleColumn = columns == 1,
+                            modifier = Modifier.animateItem()
+                        )
                     }
                 }
             }
@@ -893,7 +900,7 @@ fun AllocationSummaryCard(assetsTotal: Double, debtsTotal: Double) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(
                 Brush.linearGradient(
@@ -995,7 +1002,7 @@ fun CategoryDistributionCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(
                 Brush.linearGradient(
@@ -1256,6 +1263,13 @@ fun ItemCard(item: FinancialItem, currencySymbol: String, onClick: () -> Unit, o
                             color = gainColor
                         )
                     }
+                } else if (item.depositAmount != null && item.tenureMonths != null) {
+                    Text(
+                        "${formatCurrency(item.depositAmount, currencySymbol)} • ${item.tenureMonths}m",
+                        fontSize = 12.sp,
+                        color = if (isDarkMode) Color.White.copy(alpha = 0.6f) else Color(0xFF64748B),
+                        fontWeight = FontWeight.Medium
+                    )
                 } else if (item.isDebt && item.minimumPayment > 0.0) {
                     Text(
                         "Min: ${formatCurrency(item.minimumPayment, currencySymbol)}", 
@@ -1287,6 +1301,8 @@ fun ItemEditDialog(
     var shares by remember { mutableStateOf(item?.shares?.let { if (it > 0.0) it.toString() else "" } ?: "") }
     var purchasePrice by remember { mutableStateOf(item?.purchasePrice?.let { if (it > 0.0) it.toString() else "" } ?: "") }
     var currentPrice by remember { mutableStateOf(item?.currentPrice?.let { if (it > 0.0) it.toString() else "" } ?: "") }
+    var depositAmount by remember { mutableStateOf(item?.depositAmount?.let { if (it > 0.0) it.toString() else "" } ?: "") }
+    var tenureMonths by remember { mutableStateOf(item?.tenureMonths?.let { if (it > 0) it.toString() else "" } ?: "") }
     
     var expanded by remember { mutableStateOf(false) }
     
@@ -1372,6 +1388,7 @@ fun ItemEditDialog(
             }
             
             val isStockOrETF = type.lowercase() in listOf("stock", "etf")
+            val isFDorRD = type.lowercase() in listOf("fixed deposit", "recurring deposit")
             
             if (isStockOrETF) {
                 OutlinedTextField(
@@ -1392,6 +1409,65 @@ fun ItemEditDialog(
                     value = currentPrice,
                     onValueChange = { currentPrice = it },
                     label = { Text("Current Market Price") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else if (isFDorRD) {
+                OutlinedTextField(
+                    value = depositAmount,
+                    onValueChange = { depositAmount = it },
+                    label = { Text(if (type.lowercase() == "fixed deposit") "Fixed Deposit Amount" else "Monthly RD Amount") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = tenureMonths,
+                    onValueChange = { tenureMonths = it },
+                    label = { Text("Tenure (Months)") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = interestRate,
+                    onValueChange = { interestRate = it },
+                    label = { Text("Annual Interest Rate (%)") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                
+                // Displaying estimation 
+                val dep = depositAmount.toDoubleOrNull() ?: 0.0
+                val tenure = tenureMonths.toIntOrNull() ?: 0
+                val rate = interestRate.toDoubleOrNull() ?: 0.0
+                if (dep > 0 && tenure > 0 && rate > 0) {
+                    val estimatedMaturity = if (type.lowercase() == "fixed deposit") {
+                        // A = P(1+r/n)^nt -> Quarterly compounding (n=4) common for FDs
+                        dep * Math.pow(1 + (rate / 400.0), (4.0 * (tenure / 12.0)))
+                    } else {
+                        // RD estimation -> M = R[(1+i)^n - 1] / (1-(1+i)^(-1/3)) * (1+i) -- complex
+                        // Simplified RD maturity: M = P * n + (P * n * (n+1) * r) / (2 * 12 * 100)
+                        val r = rate / 100.0
+                        val n = tenure.toDouble()
+                        dep * n + (dep * n * (n + 1) * r) / 24.0
+                    }
+                    
+                    Surface(
+                        color = getColorForType(type).copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text("Estimated Maturity Value:", fontSize = 12.sp, color = if (isDarkMode) Color.White.copy(alpha = 0.6f) else Color(0xFF64748B))
+                            Text(formatCurrency(estimatedMaturity, "$"), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = getColorForType(type))
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = balance,
+                    onValueChange = { balance = it },
+                    label = { Text("Current Balance (Optional Override)") },
+                    placeholder = { Text("Leave blank to use estimation") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -1445,21 +1521,43 @@ fun ItemEditDialog(
                             val parsedShares = shares.toDoubleOrNull() ?: 0.0
                             val parsedPurchasePrice = purchasePrice.toDoubleOrNull() ?: 0.0
                             val parsedCurrentPrice = currentPrice.toDoubleOrNull() ?: 0.0
-                            val parsedBalance = if (isStockOrETF) parsedShares * parsedCurrentPrice else (balance.toDoubleOrNull() ?: 0.0)
                             val parsedInterest = interestRate.toDoubleOrNull() ?: 0.0
                             val parsedMinPayment = minimumPayment.toDoubleOrNull() ?: 0.0
+                            val parsedDeposit = depositAmount.toDoubleOrNull() ?: 0.0
+                            val parsedTenure = tenureMonths.toIntOrNull() ?: 0
+                            
+                            val isStockOrETF = type.lowercase() in listOf("stock", "etf")
+                            val isFDorRD = type.lowercase() in listOf("fixed deposit", "recurring deposit")
+                            
+                            val calculatedBalance = if (isStockOrETF) {
+                                parsedShares * parsedCurrentPrice
+                            } else if (isFDorRD && balance.isBlank()) {
+                                // Estimation logic repeated for saving
+                                if (type.lowercase() == "fixed deposit") {
+                                    parsedDeposit * Math.pow(1 + (parsedInterest / 400.0), (4.0 * (parsedTenure / 12.0)))
+                                } else {
+                                    val r = parsedInterest / 100.0
+                                    val n = parsedTenure.toDouble()
+                                    parsedDeposit * n + (parsedDeposit * n * (n + 1) * r) / 24.0
+                                }
+                            } else {
+                                balance.toDoubleOrNull() ?: 0.0
+                            }
+
                             onSave(
                                 FinancialItem(
                                     id = item?.id ?: 0,
                                     isDebt = isDebt,
                                     type = type,
                                     name = name.ifBlank { "Unnamed" },
-                                    balance = parsedBalance,
+                                    balance = calculatedBalance,
                                     interestRate = parsedInterest,
                                     minimumPayment = parsedMinPayment,
                                     shares = if (isStockOrETF) parsedShares else null,
                                     purchasePrice = if (isStockOrETF) parsedPurchasePrice else null,
-                                    currentPrice = if (isStockOrETF) parsedCurrentPrice else null
+                                    currentPrice = if (isStockOrETF) parsedCurrentPrice else null,
+                                    depositAmount = if (isFDorRD) parsedDeposit else null,
+                                    tenureMonths = if (isFDorRD) parsedTenure else null
                                 )
                             )
                         },
@@ -1627,7 +1725,7 @@ fun NetWorthSummaryCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(32.dp))
             .background(
                 Brush.linearGradient(

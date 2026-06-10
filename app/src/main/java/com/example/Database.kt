@@ -15,6 +15,8 @@ data class FinancialItem(
     val shares: Double? = null,
     val purchasePrice: Double? = null,
     val currentPrice: Double? = null,
+    val depositAmount: Double? = null,
+    val tenureMonths: Int? = null,
     val timestamp: Long = System.currentTimeMillis()
 )
 
@@ -33,7 +35,7 @@ interface FinancialItemDao {
     suspend fun deleteItemById(id: Int)
 }
 
-@Database(entities = [FinancialItem::class], version = 3, exportSchema = false)
+@Database(entities = [FinancialItem::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun financialItemDao(): FinancialItemDao
 }
